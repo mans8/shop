@@ -30,7 +30,7 @@
 1.创建项目时使用初始化器导入web和openfeign
 2.com.hgx.shop.xxx 
 
-**脚手架：**https://gitee.com/renrenio（码云：人人开源）
+**脚手架：** https://gitee.com/renrenio（码云：人人开源）
 
 ***
 
@@ -43,7 +43,7 @@ Feign整合了**Ribbon（负载均衡）**和**Hystrix（服务熔断）**，可
 SpringCloudFeign在NetflixFeign的基础上扩展了对SpringMVC注解的支持，在其实现下，我们只需要创建一个接口并用注解的方式来配置它，即可完成对服务提供方的接口绑定。简化了SpringCloudRibbon自行封装服务调客户端的开发量。
 
 1. 引入openFeign
-2. 编写一个接口，声明接口的每一个方法都是调用哪个远程服务的哪个请求
+2. 编写一个接 口，声明接口的每一个方法都是调用哪个远程服务的哪个请求
 3. 开启远程调用功能，主类注解@EnableFeignClient(basePackage = "com.hgx.shop.xxx.feign")
 
 ****
@@ -115,5 +115,36 @@ spring:
           uri: https://www.qq.com
           predicates:
             - Query=url,qq
+```
+
+***
+
+**Vue模块化开发**
+
+```shell
+#全局安装webpack
+npm install webpack -g
+#全局安装vue脚手架
+npm install -g @vue/cli-init
+#进入项目目录下，初始化vue项目
+vue init webpack appname
+#确认信息时选择runtime+complier
+#确认信息时选择安装vue-router
+#运行项目
+cd appname
+npm run dev
+```
+
+***
+
+**整合Element-UI**
+
+[Element-UI中文官方文档](https://element.eleme.cn/#/zh-CN/component/installation)
+
+```
+cd appname
+npm i element-ui
+
+
 ```
 
