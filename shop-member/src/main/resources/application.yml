@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://192.168.1.54:3306/shop_ums
+    url: jdbc:mysql://192.168.1.54:3306/shop_ums?characterEncoding=utf8
     driver-class-name: com.mysql.jdbc.Driver
   cloud:
     nacos:
