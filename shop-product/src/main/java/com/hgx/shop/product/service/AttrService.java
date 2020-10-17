@@ -3,6 +3,7 @@ package com.hgx.shop.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hgx.common.utils.PageUtils;
 import com.hgx.shop.product.entity.AttrEntity;
+import com.hgx.shop.product.vo.AttrRespVo;
 import com.hgx.shop.product.vo.AttrVo;
 
 import java.util.Map;
@@ -23,5 +24,9 @@ public interface AttrService extends IService<AttrEntity> {
     void saveAttr(AttrVo attr);
 
     PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId);
+
+    AttrRespVo getAttrInfo(Long attrId);
+
+    void updateAttr(AttrVo attr);
 }
 
