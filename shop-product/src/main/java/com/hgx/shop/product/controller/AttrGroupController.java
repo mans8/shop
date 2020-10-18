@@ -1,11 +1,15 @@
 package com.hgx.shop.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
+import com.hgx.shop.product.entity.AttrEntity;
+import com.hgx.shop.product.service.AttrAttrgroupRelationService;
 import com.hgx.shop.product.service.AttrService;
 import com.hgx.shop.product.service.CategoryService;
+import com.hgx.shop.product.vo.AttrGroupRelationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,12 +38,57 @@ public class AttrGroupController {
     @Autowired
     AttrService attrService;
 
-    ///product/attrgroup/{attrgroupId}/noattr/relation
+    @Autowired
+    AttrAttrgroupRelationService relationService;
+
+    /**
+     * /product/attrgroup/attr/relation
+     * @param vos
+     * @return
+     */
+    @PostMapping("/attr/relation")
+    public R addRelation(@RequestBody List<AttrGroupRelationVo> vos){
+        relationService.saveBatch(vos);
+        return R.ok();
+    }
+
+
+
+    /**
+     * /product/attrgroup/{attrgroupId}/attr/relation
+     * @param attrgrouId
+     * @return
+     */
+    @GetMapping("/{attrgroupId}/attr/relation")
+    public R arrtRelation(@PathVariable("attrgroupId") Long attrgrouId){
+        List<AttrEntity> entities = attrService.getRelationAttr(attrgrouId);
+        return R.ok().put("data",entities);
+    }
+
+    /**
+     * /product/attrgroup/{attrgroupId}/noattr/relation
+     * @param attrgroupId
+     * @param params
+     * @return
+     */
     @GetMapping("/{attrgroupId}/noattr/relation")
     public R attrNoRelation(@PathVariable("attrgroupId") Long attrgroupId,
                             @RequestParam Map<String, Object> params){
         PageUtils page = attrService.getNoRelationAttr(params,attrgroupId);
         return R.ok().put("page",page);
+    }
+
+
+
+    /**
+     *
+     * @param vos
+     * @return
+     */
+    @PostMapping("/attr/relation/delete")
+    public R deleteRelation(@RequestBody  AttrGroupRelationVo[] vos){
+        attrService.deleteRelation(vos);
+        return R.ok();
     }
 
     /**
