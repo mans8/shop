@@ -13,3 +13,6 @@ spring:
     name: shop-third-party
 server:
   port: 30000
+logging:
+  level:
+    com.hgx.shop: debug
