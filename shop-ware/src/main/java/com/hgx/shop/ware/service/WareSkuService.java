@@ -3,6 +3,7 @@ package com.hgx.shop.ware.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hgx.common.utils.PageUtils;
 import com.hgx.shop.ware.entity.WareSkuEntity;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Map;
 
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface WareSkuService extends IService<WareSkuEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void addStock(Long skuId, Long wareId, Integer skuNum);
 }
 
