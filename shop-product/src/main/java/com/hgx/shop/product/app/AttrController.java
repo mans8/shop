@@ -1,4 +1,4 @@
-package com.hgx.shop.product.controller;
+package com.hgx.shop.product.app;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,13 +7,11 @@ import java.util.Map;
 
 import com.hgx.shop.product.entity.ProductAttrValueEntity;
 import com.hgx.shop.product.service.ProductAttrValueService;
-import com.hgx.shop.product.vo.AttrGroupRelationVo;
 import com.hgx.shop.product.vo.AttrRespVo;
 import com.hgx.shop.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.hgx.shop.product.entity.AttrEntity;
 import com.hgx.shop.product.service.AttrService;
 import com.hgx.common.utils.PageUtils;
 import com.hgx.common.utils.R;

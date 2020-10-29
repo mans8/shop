@@ -1,4 +1,4 @@
-package com.hgx.shop.product.controller;
+package com.hgx.shop.product.app;
 
 import com.hgx.common.utils.R;
 import com.hgx.shop.product.entity.CategoryEntity;

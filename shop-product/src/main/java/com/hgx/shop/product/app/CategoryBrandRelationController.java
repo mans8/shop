@@ -1,4 +1,4 @@
-package com.hgx.shop.product.controller;
+package com.hgx.shop.product.app;
 
 import java.util.Arrays;
 import java.util.List;
