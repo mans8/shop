@@ -47,6 +47,11 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment}
 
+        - id: shop_host_route
+          uri: lb://shop-product
+          predicates:
+            - Host=**.shop.com,shop.com
+
 logging:
   level:
     com.hgx.shop: debug
