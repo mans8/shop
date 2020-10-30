@@ -1,11 +1,15 @@
 package com.hgx.shop.product.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.hgx.shop.product.service.CategoryBrandRelationService;
 import com.hgx.shop.product.vo.Catelog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -18,6 +22,7 @@ import com.hgx.shop.product.dao.CategoryDao;
 import com.hgx.shop.product.entity.CategoryEntity;
 import com.hgx.shop.product.service.CategoryService;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 
 @Service("categoryService")
@@ -25,6 +30,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     CategoryBrandRelationService categoryBrandRelationService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -99,39 +107,85 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return categoryEntities;
     }
 
+    //TODO 产生对外内存溢出：OutOfDirectMemoryError
+    //1）、springboot2.0以后默认使用lettuce作为操作redis的客户端，它使用netty进行网络通信
+    //2）、lettuce的bug导致netty对外内存溢出 -Xmx300m；netty如果没有指定堆外内存，默认使用-Xmx300m
+    //     可以通过-Dio.netty.maxDirectMemory只去调大堆外内存
+    //  1）、升级lettuce客户端   2）、切换使用jedis
+    //  redisTemplate;
+    //  lettuce，jedis操作redis的底层客户端。spring再次封装redisTemplate
     @Override
     public Map<String, List<Catelog2Vo>> getCatalogJson() {
 
-        //将数据库查询多次变为一次
-        List<CategoryEntity> selectList = baseMapper.selectList(null);
-        //1、查出所有1级分类
-        List<CategoryEntity> level1Categorys = getParent_cid(selectList, 0L);
-        //2、封装数据
-        return level1Categorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
-            //1、每一个的一级分类，查到这个一级分类的二级分类
-            List<CategoryEntity> categoryEntities = getParent_cid(selectList, v.getCatId());
-            //2.封装结果
-            List<Catelog2Vo> catelog2Vos = null;
-            if (categoryEntities != null) {
-                catelog2Vos = categoryEntities.stream().map(l2 -> {
-                    Catelog2Vo catelog2Vo = new Catelog2Vo(v.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
-                    //1.当前二级分类的三级分类封装成vo
-                    List<CategoryEntity> level3Catelog = getParent_cid(selectList, l2.getCatId());
-                    if (level3Catelog != null) {
-                        List<Catelog2Vo.Catelog3Vo> collect = level3Catelog.stream().map(l3 -> {
-                            //2.封装成指定格式
-                            Catelog2Vo.Catelog3Vo catelog3Vo = new Catelog2Vo.Catelog3Vo(l2.getCatId().toString(),
-                                    l3.getCatId().toString(),
-                                    l3.getName());
-                            return catelog3Vo;
-                        }).collect(Collectors.toList());
-                        catelog2Vo.setCatalog3List(collect);
-                    }
-                    return catelog2Vo;
-                }).collect(Collectors.toList());
+        //给缓存中放json字符串，拿出的json字符串，还要逆转为能用的对象类型【序列化与反序列化】
+
+        //1.加入缓存逻辑，缓存中村的数据是json字符串
+        //跨语言，跨平台
+        String catalogJSON = redisTemplate.opsForValue().get("catalogJSON");
+        if (StringUtils.isEmpty(catalogJSON)) {
+            //2.缓存中没有，查询数据库
+            Map<String, List<Catelog2Vo>> catalogJsonFromDb = getCatalogJsonFromDb();
+            
+            return catalogJsonFromDb;
+        }
+        //转为我们制定的对象
+        Map<String, List<Catelog2Vo>> result = JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catelog2Vo>>>() {
+        });
+        return result;
+    }
+
+    /**
+     * 从数据库查询并封装分类数据
+     *
+     * @return
+     */
+    public Map<String, List<Catelog2Vo>> getCatalogJsonFromDb() {
+
+        synchronized (this) {
+            //获取锁后，去缓存中确定是否需要查询数据库
+            String catalogJSON = redisTemplate.opsForValue().get("catalogJSON");
+            if (!StringUtils.isEmpty(catalogJSON)) {
+                //如果缓存有数据，直接返回
+                Map<String, List<Catelog2Vo>> result = JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catelog2Vo>>>() {
+                });
+                return result;
             }
-            return catelog2Vos;
-        }));
+
+            //将数据库查询多次变为一次
+            List<CategoryEntity> selectList = baseMapper.selectList(null);
+            //1、查出所有1级分类
+            List<CategoryEntity> level1Categorys = getParent_cid(selectList, 0L);
+            //2、封装数据
+            Map<String, List<Catelog2Vo>> parent_cid = level1Categorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+                //1、每一个的一级分类，查到这个一级分类的二级分类
+                List<CategoryEntity> categoryEntities = getParent_cid(selectList, v.getCatId());
+                //2.封装结果
+                List<Catelog2Vo> catelog2Vos = null;
+                if (categoryEntities != null) {
+                    catelog2Vos = categoryEntities.stream().map(l2 -> {
+                        Catelog2Vo catelog2Vo = new Catelog2Vo(v.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
+                        //1.当前二级分类的三级分类封装成vo
+                        List<CategoryEntity> level3Catelog = getParent_cid(selectList, l2.getCatId());
+                        if (level3Catelog != null) {
+                            List<Catelog2Vo.Catelog3Vo> collect = level3Catelog.stream().map(l3 -> {
+                                //2.封装成指定格式
+                                Catelog2Vo.Catelog3Vo catelog3Vo = new Catelog2Vo.Catelog3Vo(l2.getCatId().toString(),
+                                        l3.getCatId().toString(),
+                                        l3.getName());
+                                return catelog3Vo;
+                            }).collect(Collectors.toList());
+                            catelog2Vo.setCatalog3List(collect);
+                        }
+                        return catelog2Vo;
+                    }).collect(Collectors.toList());
+                }
+                return catelog2Vos;
+            }));
+            //3.查到的数据再放入缓存，将对象转为json放在缓存中
+            String s = JSON.toJSONString(parent_cid);
+            redisTemplate.opsForValue().set("catalogJSON", s,1, TimeUnit.DAYS);
+            return parent_cid;
+        }
     }
 
     private List<CategoryEntity> getParent_cid(List<CategoryEntity> selectList, Long parent_cid) {
