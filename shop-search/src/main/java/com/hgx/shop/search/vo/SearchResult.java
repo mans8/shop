@@ -14,7 +14,7 @@ import java.util.List;
 public class SearchResult {
 
     //查询到的所有产品信息
-    private List<SkuEsModel> product;
+    private List<SkuEsModel> products;
 
     private Integer pageNum;
     private Long total;

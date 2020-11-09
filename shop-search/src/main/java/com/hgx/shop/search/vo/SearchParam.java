@@ -28,7 +28,7 @@ public class SearchParam {
     private String sort;
 
     //是否显示有货，0无库存，1有库存
-    private Integer hasStock = 1;
+    private Integer hasStock;
 
     //价格区间查询
     private String skuPrice;
