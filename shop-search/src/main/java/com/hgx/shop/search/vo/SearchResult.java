@@ -19,6 +19,7 @@ public class SearchResult {
     private Integer pageNum;
     private Long total;
     private Integer totalPages;
+    private List<Integer> pageNavs;
 
     //当前查询到的结果，所有涉及的品牌
     private List<BrandVo> brands;

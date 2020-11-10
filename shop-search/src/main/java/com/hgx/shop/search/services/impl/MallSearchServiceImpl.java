@@ -115,7 +115,7 @@ public class MallSearchServiceImpl implements MallSearchService {
 
 
         //1.2、bool - filter按照库存是否有进行查询
-        if (param.getHasStock() != null){
+        if (param.getHasStock() != null) {
             boolQuery.filter(QueryBuilders.termsQuery("hasStock", param.getHasStock() == 0));
         }
 
@@ -308,9 +308,15 @@ public class MallSearchServiceImpl implements MallSearchService {
         result.setTotal(total);
 //        result.setTotal();
         //7、分页信心-总页码
-        int totalPages = (int) (total % EsConstant.PRODUCT_PAGESIZE == 0 ? total % EsConstant.PRODUCT_PAGESIZE :
-                (total % EsConstant.PRODUCT_PAGESIZE + 1));
+        int totalPages = (int) (total % EsConstant.PRODUCT_PAGESIZE == 0 ? total / EsConstant.PRODUCT_PAGESIZE :
+                (total / EsConstant.PRODUCT_PAGESIZE + 1));
         result.setTotalPages(totalPages);
+
+        List<Integer> pageNavs = new ArrayList<>();
+        for (int i = 1; i <= totalPages; i++) {
+            pageNavs.add(i);
+        }
+        result.setPageNavs(pageNavs);
 
 
         return result;
