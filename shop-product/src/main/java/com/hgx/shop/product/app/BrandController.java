@@ -1,15 +1,12 @@
 package com.hgx.shop.product.app;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hgx.shop.product.entity.BrandEntity;
 import com.hgx.shop.product.service.BrandService;
@@ -54,6 +51,12 @@ public class BrandController {
         return R.ok().put("brand", brand);
     }
 
+    @GetMapping("/infos")
+    public R info(@RequestParam("brandIds") List<Long> brandIds){
+
+        List<BrandEntity> brand = brandService.getBrandByIds(brandIds);
+        return R.ok().put("brand", brand);
+    }
     /**
      * 保存
      */
