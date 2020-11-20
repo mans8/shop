@@ -42,4 +42,6 @@ public class SearchParam {
     //页码
     private Integer pageNum = 1;
 
+    private String _queryString;//原生的所有查询条件
+
 }

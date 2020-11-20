@@ -1,10 +1,14 @@
 package com.hgx.shop.search.services.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.hgx.common.to.es.SkuEsModel;
+import com.hgx.common.utils.R;
 import com.hgx.shop.search.config.ShopElasticSearchConfig;
 import com.hgx.shop.search.constant.EsConstant;
+import com.hgx.shop.search.feign.ProductFeignService;
 import com.hgx.shop.search.services.MallSearchService;
+import com.hgx.shop.search.vo.AttrResponseVo;
 import com.hgx.shop.search.vo.SearchParam;
 import com.hgx.shop.search.vo.SearchResult;
 import org.apache.lucene.search.join.ScoreMode;
@@ -30,6 +34,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +50,9 @@ public class MallSearchServiceImpl implements MallSearchService {
 
     @Autowired
     private RestHighLevelClient client;
+
+    @Autowired
+    ProductFeignService productFeignService;
 
     @Override
     public SearchResult search(SearchParam param) {
@@ -318,6 +327,39 @@ public class MallSearchServiceImpl implements MallSearchService {
         }
         result.setPageNavs(pageNavs);
 
+        //8、构建面包屑导航功能
+        if (param.getAttrs() != null && param.getAttrs().size() > 0) {
+            List<SearchResult.NavVo> collect = param.getAttrs().stream().map(attr -> {
+                //1、分析每个attr传过来的查询参数
+                SearchResult.NavVo navVo = new SearchResult.NavVo();
+                //attr=2_5存:6寸
+                String[] s = attr.split("_");
+                navVo.setNavValue(s[1]);
+                R r = productFeignService.attrInfo(Long.parseLong(s[0]));
+                if (r.getCode() == 0) {
+                    AttrResponseVo data = r.getData("attr", new TypeReference<AttrResponseVo>() {
+                    });
+                    navVo.setNavName(data.getAttrName());
+                } else {
+                    navVo.setNavName(s[0]);
+                }
+
+                //2、取消了这个面包屑以后，跳转到哪个地方，将请求地址的url里面的当前置空
+                //拿到所有的查询条件，去掉当前。
+                String encode = null;
+                try {
+                    encode = URLEncoder.encode(attr, "UTF-8");
+                    encode = encode.replace("+", "20%");//浏览器对空格的编码和java不一样
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                String replace = param.get_queryString().replace("&attrs=" + attr, "");
+                navVo.setLink("http://search.shop.com/list.html" + replace);
+
+                return navVo;
+            }).collect(Collectors.toList());
+            result.setNavs(collect);
+        }
 
         return result;
     }
