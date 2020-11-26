@@ -50,7 +50,7 @@ spring:
         - id: shop_host_route
           uri: lb://shop-product
           predicates:
-            - Host=shop.com
+            - Host=shop.com,item.shop.com
 
         - id: shop_search_route
           uri: lb://shop-search
