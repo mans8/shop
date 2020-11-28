@@ -5,6 +5,7 @@ import com.hgx.shop.product.entity.SkuInfoEntity;
 import com.hgx.shop.product.entity.SpuInfoDescEntity;
 import com.hgx.shop.product.entity.SpuInfoEntity;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -29,26 +30,5 @@ public class SkuItemVo {
 
     //5、获取spu规格参数信息
     List<SpuItemAttrGroupVo> groupAttrs;
-
-
-    @Data
-    public static class SkuItemSaleAttrVo {
-        private Long attrId;
-        private String attrName;
-        private List<String> attrValues;
-    }
-
-    @Data
-    public static class SpuItemAttrGroupVo {
-        private String groupName;
-        private List<SpuBaseAttrVo> attrs;
-    }
-
-    @Data
-    public static class SpuBaseAttrVo {
-        private String attrName;
-        private String attrValue;
-    }
-
 
 }
