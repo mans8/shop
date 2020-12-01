@@ -448,7 +448,7 @@
                     <div class="box-lh-one">
                         <ul>
                             <li th:each="img:${item.images}"
-								th:if="${!#strings.isEmpty(img.imgUrl)}"><img th:src="${img.imgUrl}"/></li>
+                                th:if="${!#strings.isEmpty(img.imgUrl)}"><img th:src="${img.imgUrl}"/></li>
                         </ul>
                     </div>
                     <div id="left">
@@ -604,10 +604,11 @@
                     <div class="box-attr clear" th:each="attr:${item.saleAttr}">
                         <dl>
                             <dt>选择[[${attr.attrName}]]</dt>
-                            <dd th:each="val:${#strings.listSplit(attr.attrValues,',')}">
-                                <a href="/static/item/#">
-									[[${val}]]
-<!--                                    <img src="/static/item/img/59ddfcb1Nc3edb8f1.jpg"/> [[${val}]]-->
+                            <dd th:each="vals:${attr.attrValues}">
+                                <a class="sku_attr_value"
+                                   th:attr="skus=${vals.skuIds},class=${#lists.contains(#strings.listSplit(vals.skuIds,','),item.info.skuId.toString())?'sku_attr_value checked':'sku_attr_value'}">
+                                    [[${vals.attrValue}]]
+                                    <!--                                    <img src="/static/item/img/59ddfcb1Nc3edb8f1.jpg"/> [[${val}]]-->
                                 </a>
                             </dd>
                         </dl>
@@ -837,46 +838,46 @@
                 <ul class="xuanxiangka">
                     <li class="jieshoa actives" id="li1">
                         <div class="shanpinsssss">
-<!--                            <p>-->
-<!--                                <a href="/static/item/#">品牌:华为（HUAWEI）</a>-->
-<!--                            </p>-->
-<!--                            <table>-->
-<!--                                <tr>-->
-<!--                                    <td>-->
-<!--                                        <a href="/static/item/##">商品名称：华为Mate 10</a>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <a href="/static/item/##">商品毛重：0.58kg</a>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <a href="/static/item/##">商品编号：5544038</a>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <a href="/static/item/##">商品产地：中国大陆</a>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td>-->
-<!--                                        <a href="/static/item/##">系统：安卓（Android）</a>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <a href="/static/item/##">前置摄像头像素：800万-1599万</a>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <a href="/static/item/##">后置摄像头像素：2000万及以上，1200万-1999万</a>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <a href="/static/item/##">机身内存：128GB</a>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td colspan="4">-->
-<!--                                        <a href="/static/item/##">全面屏，双卡双待，指纹识别，Type-C，VoLTE，2K屏，拍照神器，支持NFC，商务手机，安全手机，分辨率10</a>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                            </table>-->
+                            <!--                            <p>-->
+                            <!--                                <a href="/static/item/#">品牌:华为（HUAWEI）</a>-->
+                            <!--                            </p>-->
+                            <!--                            <table>-->
+                            <!--                                <tr>-->
+                            <!--                                    <td>-->
+                            <!--                                        <a href="/static/item/##">商品名称：华为Mate 10</a>-->
+                            <!--                                    </td>-->
+                            <!--                                    <td>-->
+                            <!--                                        <a href="/static/item/##">商品毛重：0.58kg</a>-->
+                            <!--                                    </td>-->
+                            <!--                                    <td>-->
+                            <!--                                        <a href="/static/item/##">商品编号：5544038</a>-->
+                            <!--                                    </td>-->
+                            <!--                                    <td>-->
+                            <!--                                        <a href="/static/item/##">商品产地：中国大陆</a>-->
+                            <!--                                    </td>-->
+                            <!--                                </tr>-->
+                            <!--                                <tr>-->
+                            <!--                                    <td>-->
+                            <!--                                        <a href="/static/item/##">系统：安卓（Android）</a>-->
+                            <!--                                    </td>-->
+                            <!--                                    <td>-->
+                            <!--                                        <a href="/static/item/##">前置摄像头像素：800万-1599万</a>-->
+                            <!--                                    </td>-->
+                            <!--                                    <td>-->
+                            <!--                                        <a href="/static/item/##">后置摄像头像素：2000万及以上，1200万-1999万</a>-->
+                            <!--                                    </td>-->
+                            <!--                                    <td>-->
+                            <!--                                        <a href="/static/item/##">机身内存：128GB</a>-->
+                            <!--                                    </td>-->
+                            <!--                                </tr>-->
+                            <!--                                <tr>-->
+                            <!--                                    <td colspan="4">-->
+                            <!--                                        <a href="/static/item/##">全面屏，双卡双待，指纹识别，Type-C，VoLTE，2K屏，拍照神器，支持NFC，商务手机，安全手机，分辨率10</a>-->
+                            <!--                                    </td>-->
+                            <!--                                </tr>-->
+                            <!--                            </table>-->
                             <img class="xiaoguo" th:src="${descp}"
-								 th:each="descp:${#strings.listSplit(item.desp.decript,',')}"/>
+                                 th:each="descp:${#strings.listSplit(item.desp.decript,',')}"/>
                             <div class="guiGebox guiGebox1">
                                 <div class="guiGe" th:each="guige:${item.groupAttrs}">
                                     <h3 th:text="${guige.groupName}">主体</h3>
@@ -912,10 +913,10 @@
                             <div class="guiGe" th:each="group:${item.groupAttrs}">
                                 <h3 th:text="${group.groupName}">主体</h3>
                                 <dl>
-									<div th:each="attr:${group.attrs}">
-                                    <dt th:text="${attr.attrName}">品牌</dt>
-                                    <dd th:text="${attr.attrValue}">华为(HUAWEI)</dd>
-									</div>
+                                    <div th:each="attr:${group.attrs}">
+                                        <dt th:text="${attr.attrName}">品牌</dt>
+                                        <dd th:text="${attr.attrValue}">华为(HUAWEI)</dd>
+                                    </div>
                                 </dl>
                             </div>
 
@@ -1291,7 +1292,36 @@
 
 <script src="/static/item/js/jquery1.9.js" type="text/javascript" charset="utf-8"></script>
 <script src="/static/item/js/js.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript">
+<script>
+    $(".sku_attr_value").click(function () {
+        //1.获取到所有加了checked的属性
+        var skus = new Array();
+        $(this).addClass("clicked");
+        var curr = $(this).attr("skus").split(",");
+        //当前被点击的所有sku组合数组放进去
+        skus.push(curr);
+        //去掉同一行的所有的checked
+        $(this).parent().parent().find(".sku_attr_value").removeClass("checked");
+        $("a[class='sku_attr_value checked']").each(function () {
+            skus.push($(this).attr("skus").split(","));
+        });
+
+        //2.取出他们的交集，得到skuId
+        var filterEle = skus[0];
+        for (var i = 1; i < skus.length; i++) {
+            filterEle = $(filterEle).filter(skus[i]);
+        }
+        location.href = "http://item.shop.com/" + filterEle[0] + ".html";
+        console.log(location.href);
+
+        //4.跳转
+
+    });
+
+    $(function () {
+        $(".sku_attr_value").parent().css({"border": "solid 1px #CCC"});
+        $("a[class='sku_attr_value checked']").parent().css({"border": "solid 1px red"});
+    })
 </script>
 
 </html>
