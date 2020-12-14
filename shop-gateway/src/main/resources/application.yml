@@ -57,6 +57,11 @@ spring:
           predicates:
             - Host=search.shop.com
 
+        - id: shop_auth_route
+          uri: lb://shop-auth-server
+          predicates:
+            - Host=auth.shop.com
+
 logging:
   level:
     com.hgx.shop: debug
