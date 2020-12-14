@@ -9,6 +9,12 @@ spring:
       oss:
         endpoint: oss-cn-shenzhen.aliyuncs.com
         bucket: shop-hgx
+      sms:
+        host: https://feginesms.market.alicloudapi.com
+        path: /codeNotice
+        skin: 1
+        sign: 175622
+#        appcode: b089ced660154aedb927f246a853d681
   application:
     name: shop-third-party
 server:
