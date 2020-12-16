@@ -3,6 +3,9 @@ package com.hgx.shop.member.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hgx.common.utils.PageUtils;
 import com.hgx.shop.member.entity.MemberEntity;
+import com.hgx.shop.member.exception.PhoneExistException;
+import com.hgx.shop.member.exception.UsernameExistException;
+import com.hgx.shop.member.vo.MemberRegistVo;
 
 import java.util.Map;
 
@@ -16,5 +19,11 @@ import java.util.Map;
 public interface MemberService extends IService<MemberEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void regist(MemberRegistVo vo);
+
+    void checkPhoneUnique(String email) throws PhoneExistException;
+
+    void checkUserNameUnique(String username) throws UsernameExistException;
 }
 
