@@ -5,7 +5,9 @@ import com.hgx.common.utils.PageUtils;
 import com.hgx.shop.member.entity.MemberEntity;
 import com.hgx.shop.member.exception.PhoneExistException;
 import com.hgx.shop.member.exception.UsernameExistException;
+import com.hgx.shop.member.vo.MemberLoginVo;
 import com.hgx.shop.member.vo.MemberRegistVo;
+import com.hgx.shop.member.vo.SocialUser;
 
 import java.util.Map;
 
@@ -25,5 +27,9 @@ public interface MemberService extends IService<MemberEntity> {
     void checkPhoneUnique(String email) throws PhoneExistException;
 
     void checkUserNameUnique(String username) throws UsernameExistException;
+
+    MemberEntity login(MemberLoginVo vo);
+
+    MemberEntity login(SocialUser socialUser) throws Exception;
 }
 
