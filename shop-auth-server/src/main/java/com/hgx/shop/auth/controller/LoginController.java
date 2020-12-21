@@ -6,6 +6,7 @@ import com.hgx.common.exception.BizCodeEnume;
 import com.hgx.common.utils.R;
 import com.hgx.shop.auth.feign.MemberFeignService;
 import com.hgx.shop.auth.feign.ThirdPartFeignService;
+import com.hgx.shop.auth.vo.UserLoginVo;
 import com.hgx.shop.auth.vo.UserRegistVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -67,8 +68,6 @@ public class LoginController {
         // key = sms:code:手机号
         // value = 6位验证码_验证码创建时间的毫秒数
 
-        //String code = UUID.randomUUID().toString().substring(0, 5) + "_" + System.currentTimeMillis();
-
         String code = UUID.randomUUID().toString().substring(0, 5);
         String redisKey = AuthServerConstant.SMS_CACHE_PREFIX + phone;
         String redisValue = code + "_" + System.currentTimeMillis();
@@ -109,16 +108,18 @@ public class LoginController {
                 redisTemplate.delete(AuthServerConstant.SMS_CACHE_PREFIX + vo.getPhone());
                 //验证码通过 //真正注册。调用远程服务进行注册
                 R r = memberFeignService.regist(vo);
-                if (r.getCode() == 0){
+                if (r.getCode() == 0) {
                     //成功
+
                     return "redirect:/login.html";
-                }else {
-                    Map<String,String> errors = new HashMap<>();
-                    errors.put("msg",r.getData(new TypeReference<String>(){}));
-                    redirectAttributes.addFlashAttribute("errors",errors);
+                } else {
+                    Map<String, String> errors = new HashMap<>();
+                    errors.put("msg", r.getData("msg", new TypeReference<String>() {
+                    }));
+                    redirectAttributes.addFlashAttribute("errors", errors);
                     return "redirect:http://auth.shop.com/reg.html";
                 }
-            }else {
+            } else {
                 Map<String, String> errors = new HashMap<>();
                 errors.put("code", "验证码错误");
                 redirectAttributes.addFlashAttribute("errors", errors);
@@ -130,6 +131,21 @@ public class LoginController {
             redirectAttributes.addFlashAttribute("errors", errors);
             //校验出错，转发到注册页
             return "redirect:http://auth.shop.com/reg.html";
+        }
+    }
+
+    @PostMapping("/login")
+    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes) {
+        //远程登录
+        R r = memberFeignService.login(vo);
+        if (r.getCode() == 0) {
+            //成功
+            return "redirect:http://shop.com";
+        } else {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("msg", r.getData("msg", new TypeReference<String>() {}));
+            redirectAttributes.addFlashAttribute("errors", "");
+            return "redirect:http://auth.shop.com/login.html";
         }
     }
 
