@@ -25,24 +25,26 @@ import com.hgx.shop.product.dao.SkuInfoDao;
 import com.hgx.shop.product.entity.SkuInfoEntity;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
+
 
 @Service("skuInfoService")
 public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> implements SkuInfoService {
 
     @Autowired
-    SkuImagesService imagesService;
+    private SkuImagesService imagesService;
 
     @Autowired
-    SpuInfoDescService spuInfoDescService;
+    private SpuInfoDescService spuInfoDescService;
 
     @Autowired
-    AttrGroupService attrGroupService;
+    private AttrGroupService attrGroupService;
 
     @Autowired
-    SkuSaleAttrValueService skuSaleAttrValueService;
+    private SkuSaleAttrValueService skuSaleAttrValueService;
 
-    @Autowired
-    ThreadPoolExecutor executor;
+    //@Autowired   此处不能加autowired
+    private ThreadPoolExecutor executor;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
