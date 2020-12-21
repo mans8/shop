@@ -1,14 +1,22 @@
 package com.hgx.shop.member.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.hgx.common.utils.HttpUtils;
 import com.hgx.shop.member.dao.MemberLevelDao;
 import com.hgx.shop.member.entity.MemberLevelEntity;
 import com.hgx.shop.member.exception.PhoneExistException;
 import com.hgx.shop.member.exception.UsernameExistException;
+import com.hgx.shop.member.vo.MemberLoginVo;
 import com.hgx.shop.member.vo.MemberRegistVo;
+import com.hgx.shop.member.vo.SocialUser;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -40,6 +48,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
 
     /**
      * 用户注册
+     *
      * @param vo
      */
     @Override
@@ -83,6 +92,82 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         Integer user = memberDao.selectCount(new QueryWrapper<MemberEntity>().eq("username", username));
         if (user > 0) {
             throw new UsernameExistException();
+        }
+    }
+
+    @Override
+    public MemberEntity login(MemberLoginVo vo) {
+        String loginacct = vo.getLoginacct();
+        String password = vo.getPassword();
+        //1.去数据库查询
+        MemberDao memberDao = this.baseMapper;
+        MemberEntity entity = memberDao.selectOne(new QueryWrapper<MemberEntity>().eq("username", loginacct).or().eq("mobile", loginacct));
+        if (entity == null) {
+            //登录失败
+            return null;
+        } else {
+            //1.获取数据库的password
+            String passwordDb = entity.getPassword();
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            //2.获取密码匹配
+            boolean matches = passwordEncoder.matches(password, passwordDb);
+            if (matches) {
+                return entity;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    @Override
+    public MemberEntity login(SocialUser socialUser) throws Exception {
+        //登录和注册合并逻辑
+        String uid = socialUser.getUid();
+        //1.判断当前社交用户是否已经登陆过系统
+        MemberDao memberDao = this.baseMapper;
+        MemberEntity memberEntity = memberDao.selectOne(new QueryWrapper<MemberEntity>().eq("social_uid", uid));
+        if (memberEntity != null) {
+            //这个用户已经注册
+            MemberEntity update = new MemberEntity();
+            update.setId(memberEntity.getId());
+            update.setAccessToken(socialUser.getAccess_token());
+            update.setExpiresIn(socialUser.getExpires_in());
+            memberDao.updateById(update);
+            memberEntity.setAccessToken(socialUser.getAccess_token());
+            memberEntity.setExpiresIn(socialUser.getExpires_in());
+            return memberEntity;
+
+        } else {
+            //2.用户没有注册，需要注册一个
+            MemberEntity regist = new MemberEntity();
+
+            try {
+                //3.查询当前社交用户的社交账号信息（昵称，性别等）
+                Map<String, String> query = new HashMap<>();
+                query.put("access_token", socialUser.getAccess_token());
+                query.put("uid", socialUser.getUid());
+                //https://api.weibo.com/oauth2/access_token?client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=authorization_code&redirect_uri=YOUR_REGISTERED_REDIRECT_URI&code=CODE
+                HttpResponse response = HttpUtils.doGet("https://api.weibo.com", "/2/users/show.json", "get", new HashMap<String, String>(), query);
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    //查询成功
+                    String json = EntityUtils.toString(response.getEntity());
+                    JSONObject jsonObject = JSON.parseObject(json);
+                    //昵称
+                    String name = jsonObject.getString("name");
+                    String gender = jsonObject.getString("gender");
+                    //....
+                    regist.setNickname(name);
+                    regist.setGender("m".equals(gender) ? 1 : 0);
+                    //...
+                }
+            } catch (Exception e) {
+
+            }
+            regist.setSocialUid(socialUser.getUid());
+            regist.setAccessToken(socialUser.getAccess_token());
+            regist.setExpiresIn(socialUser.getExpires_in());
+            memberDao.insert(regist);
+            return regist;
         }
     }
 
