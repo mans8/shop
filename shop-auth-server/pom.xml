@@ -71,6 +71,12 @@
             <version>6.1.5.Final</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- 整合springSession完成session共享问题 -->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
