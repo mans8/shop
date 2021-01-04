@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
 /*
@@ -24,7 +26,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 在application.ym中告诉sql映射文件配置
 
 */
-@EnableCaching
+@EnableRedisHttpSession  //开启springsession
+@EnableCaching      //开启缓存功能
 @EnableFeignClients(basePackages = "com.hgx.shop.product.feign")
 @MapperScan("com.hgx.shop.product.dao")
 @EnableDiscoveryClient
