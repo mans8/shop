@@ -95,10 +95,13 @@
             </b>
             <ul>
                 <li>
-                    <a href="http://auth.shop.com/login.html">你好，请登录</a>
+                    <!--columns:[[ 进行换行处理-->
+                    <a th:if="${session.loginUser != null}">欢迎：[[
+                        ${session.loginUser==null?'':session.loginUser.nickname}]]</a>
+                    <a href="http://auth.shop.com/login.html" th:if="${session.loginUser == null}" >欢迎，请登录</a>
                 </li>
                 <li>
-                    <a href="http://auth.shop.com/reg.html" class="li_2">免费注册</a>
+                    <a th:if="${session.loginUser==null}" href="http://auth.shop.com/reg.html" class="li_2">免费注册</a>
                 </li>
                 <span>|</span>
                 <li>
