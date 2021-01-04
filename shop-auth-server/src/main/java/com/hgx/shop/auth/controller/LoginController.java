@@ -4,6 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.hgx.common.constant.AuthServerConstant;
 import com.hgx.common.exception.BizCodeEnume;
 import com.hgx.common.utils.R;
+import com.hgx.common.vo.MemberRespVo;
 import com.hgx.shop.auth.feign.MemberFeignService;
 import com.hgx.shop.auth.feign.ThirdPartFeignService;
 import com.hgx.shop.auth.vo.UserLoginVo;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -134,17 +136,33 @@ public class LoginController {
         }
     }
 
+    @GetMapping("/login.html")
+    public String loginPage(HttpSession session) {
+        Object attribute = session.getAttribute(AuthServerConstant.LOGIN_USER);
+        if (attribute == null) {
+            //没登录
+            return "login";
+        } else {
+            return "redirect:http://shop.com";
+        }
+    }
+
     @PostMapping("/login")
-    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes) {
+    public String login(UserLoginVo vo, RedirectAttributes attributes, HttpSession session) {
+
         //远程登录
-        R r = memberFeignService.login(vo);
-        if (r.getCode() == 0) {
-            //成功
+        R login = memberFeignService.login(vo);
+        if (login.getCode() == 0) {
+            //成功，放到session中
+            MemberRespVo data = login.getData("data", new TypeReference<MemberRespVo>() {
+            });
+            session.setAttribute(AuthServerConstant.LOGIN_USER, data);
             return "redirect:http://shop.com";
         } else {
             Map<String, String> errors = new HashMap<>();
-            errors.put("msg", r.getData("msg", new TypeReference<String>() {}));
-            redirectAttributes.addFlashAttribute("errors", "");
+            errors.put("msg", login.getData("msg", new TypeReference<String>() {
+            }));
+            attributes.addFlashAttribute("errors", errors);
             return "redirect:http://auth.shop.com/login.html";
         }
     }
