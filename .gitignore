@@ -19,3 +19,6 @@ buildNumber.properties
 **/.iml
 .idea
 **/.gitignore
+/shop-test-sso-client/
+/shop-test-sso-client2/
+/shop-test-sso-server/
