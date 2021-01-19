@@ -104,10 +104,10 @@
                                 <p class="dj" th:text="'￥'+${#numbers.formatDecimal(item.price,3,2)}">￥4599.00</p>
                             </li>
                             <li>
-                                <p>
-                                    <span>-</span>
-                                    <span th:text="${item.count}">5</span>
-                                    <span>+</span>
+                                <p th:attr="skuId=${item.skuId}">
+                                    <span class="countOpsBtn">-</span>
+                                    <span class="countOpsNum" th:text="${item.count}">5</span>
+                                    <span class="countOpsBtn">+</span>
                                 </p>
 
                             </li>
@@ -771,6 +771,13 @@
         var skuId = $(this).attr("skuId");
         var check = $(this).prop("checked");
         location.href = "http://cart.shop.com/checkItem?skuId=" + skuId + "&check=" + (check ? 1 : 0);
+    });
+
+    $(".countOpsBtn").click(function () {
+        //1.skuId
+        var skuId = $(this).parent().attr("skuId");
+        var num = $(this).parent().find(".countOpsNum").text();
+        location.href = "http://cart.shop.com/countItem?skuId=" + skuId + "&num=" + num;
     });
 </script>
 </html>
