@@ -43,7 +43,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
 
-    //@Autowired   此处不能加autowired
+    @Autowired
     private ThreadPoolExecutor executor;
 
     @Override
