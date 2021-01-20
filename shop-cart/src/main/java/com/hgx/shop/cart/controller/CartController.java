@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,16 +23,24 @@ public class CartController {
     @Autowired
     CartService cartService;
 
+    @GetMapping("/countItem")
+    public String countItem(@RequestParam("skuId") Long skuId,
+                            @RequestParam("num") Integer num) {
+        cartService.changeItemCount(skuId, num);
+        return "redirect:http://cart.shop.com/cart.html";
+    }
+
     /**
      * 勾选购物项
+     *
      * @param skuId
      * @param check
      * @return
      */
     @GetMapping("/checkItem")
     public String checkItem(@RequestParam("skuId") Long skuId,
-                            @RequestParam("check") Integer check){
-        cartService.checkItem(skuId,check);
+                            @RequestParam("check") Integer check) {
+        cartService.checkItem(skuId, check);
         return "redirect:http://cart.shop.com/cart.html";
     }
 
@@ -54,15 +61,16 @@ public class CartController {
         //1.快速得到用户信息：id，user-key.
         //System.out.println(userInfoTo);
         Cart cart = cartService.getCart();
-        model.addAttribute("cart",cart);
+        model.addAttribute("cart", cart);
         return "cartList";
     }
 
     /**
      * 添加商品到购物车
      * RedirectAttributes ra
-     *     ra.addFlashAttribute();将数据放在session里面可以在页面取出，但是只能取出一次
-     *     ra.addAttribute("skuId",skuId);将数据放在url后面
+     * ra.addFlashAttribute();将数据放在session里面可以在页面取出，但是只能取出一次
+     * ra.addAttribute("skuId",skuId);将数据放在url后面
+     *
      * @return
      */
     @GetMapping("/addToCart")
@@ -71,22 +79,23 @@ public class CartController {
                             RedirectAttributes ra) throws ExecutionException, InterruptedException {
 
         cartService.addToCart(skuId, num);
-        ra.addAttribute("skuId",skuId);
+        ra.addAttribute("skuId", skuId);
         //model.addAttribute("skuId", skuId);
         return "redirect:http://cart.shop.com/addToCartSuccess.html";
     }
 
     /**
      * 添加到成功页
+     *
      * @param skuId
      * @param model
      * @return
      */
     @GetMapping("/addToCartSuccess.html")
-    public String addToCartSuccessPage(@RequestParam("skuId") Long skuId,Model model){
+    public String addToCartSuccessPage(@RequestParam("skuId") Long skuId, Model model) {
         //重定向到成功页面，再次查询购物车数据即可
         CartItem item = cartService.getCartItem(skuId);
-        model.addAttribute("item",item);
+        model.addAttribute("item", item);
         return "success";
     }
 
