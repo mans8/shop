@@ -24,13 +24,15 @@ public class ShopFeignConfig {
             public void apply(RequestTemplate requestTemplate) {
                 //1.RequestContextHolder拿到刚进来的这个请求
                 ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-                //老请求
-                HttpServletRequest request = attributes.getRequest();
-                if (request != null) {
-                    //同步请求头数据，cookie
-                    String cookie = request.getHeader("Cookie");
-                    //给新请求同步了老请求的cookie
-                    requestTemplate.header("Cookie", cookie);
+                if (attributes != null) {
+                    //老请求
+                    HttpServletRequest request = attributes.getRequest();
+                    if (request != null) {
+                        //同步请求头数据，cookie
+                        String cookie = request.getHeader("Cookie");
+                        //给新请求同步了老请求的cookie
+                        requestTemplate.header("Cookie", cookie);
+                    }
                 }
             }
         };
