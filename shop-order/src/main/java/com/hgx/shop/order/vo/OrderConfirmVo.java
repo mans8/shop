@@ -44,7 +44,7 @@ public class OrderConfirmVo {
         Integer i = 0;
         if (items != null) {
             for (OrderItemVo item : items) {
-                i += item.getCount();
+                i+=item.getCount();
             }
         }
         return i;
@@ -58,7 +58,7 @@ public class OrderConfirmVo {
         if (items != null) {
             for (OrderItemVo item : items) {
                 BigDecimal multiply = item.getPrice().multiply(new BigDecimal(item.getCount().toString()));
-                sum.add(multiply);
+                sum = sum.add(multiply);
             }
         }
         return sum;
