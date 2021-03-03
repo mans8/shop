@@ -3,6 +3,7 @@ package com.hgx.shop.cart.services;
 import com.hgx.shop.cart.vo.Cart;
 import com.hgx.shop.cart.vo.CartItem;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -54,4 +55,6 @@ public interface CartService {
      * @param num
      */
     void changeItemCount(Long skuId, Integer num);
+
+    List<CartItem> getUserItems();
 }
