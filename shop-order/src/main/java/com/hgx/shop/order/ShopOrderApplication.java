@@ -5,6 +5,8 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
 /**
@@ -18,9 +20,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * 3.在配置文件中配置spring.rabbitmq信息
  * 4.@EnableRabbit：@EnableXxxxx  开启功能
  */
+@EnableRedisHttpSession
 @EnableRabbit
 @MapperScan("com.hgx.shop.order.dao")
 @EnableDiscoveryClient
+@EnableFeignClients
 @SpringBootApplication
 public class ShopOrderApplication {
 
