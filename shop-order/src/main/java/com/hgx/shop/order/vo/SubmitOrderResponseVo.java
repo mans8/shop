@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class SubmitOrderResponseVo {
 
-    private OrderEntity orderEntity;
+    private OrderEntity order;
     //错误状态码 0成功
     private Integer code;
 
