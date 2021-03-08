@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.hgx.common.exception.BizCodeEnume;
+import com.hgx.common.exception.NoStockException;
 import com.hgx.shop.ware.vo.SkuHasStockVo;
+import com.hgx.shop.ware.vo.WareSkuLockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +30,22 @@ import com.hgx.common.utils.R;
 public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
+
+    /**
+     * 订单锁定库存
+     *
+     * @param vo
+     * @return
+     */
+    @PostMapping("/lock/order")
+    public R orderLockStock(@RequestBody WareSkuLockVo vo) {
+        try {
+            Boolean stock = wareSkuService.orderLockStock(vo);
+            return R.ok();
+        } catch (NoStockException e) {
+            return R.error(BizCodeEnume.NO_STOCK_EXCEPTION.getCode(), BizCodeEnume.NO_STOCK_EXCEPTION.getMsg());
+        }
+    }
 
 
     /**
