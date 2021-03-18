@@ -22,7 +22,9 @@ import com.hgx.shop.order.service.OrderItemService;
 import com.hgx.shop.order.service.OrderService;
 import com.hgx.shop.order.to.OrderCreateTo;
 import com.hgx.shop.order.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -136,6 +138,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * @param vo
      * @return
      */
+    //@GlobalTransactional
     @Transactional
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
@@ -198,6 +201,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 return response;
             }
         }
+    }
+
+    /**
+     * 按照订单号获取订单
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        OrderEntity order_sn = this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+        return order_sn;
     }
 
     /**
