@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -22,6 +24,13 @@ public class CartController {
 
     @Autowired
     CartService cartService;
+
+    //获取当前用户购物车的购物项
+    @GetMapping(value = "/currentUserCartItems")
+    @ResponseBody
+    public List<CartItem> getCurrentUserCartItems(){
+        return cartService.getUserItems();
+    }
 
     @GetMapping("/countItem")
     public String countItem(@RequestParam("skuId") Long skuId,
