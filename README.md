@@ -1,11 +1,17 @@
 # shop
-**购物商场模块：**
+**购物商城模块：**
 
 - 商品服务shop-product
 - 仓储服务shop-ware
 - 订单服务shop-order
 - 优惠券服务shop-coupon
-- 用户服务shop-member
+- 会员服务shop-member
+- 购物车服务shop-cart
+- 检索服务shop-search
+- 授权认证服务shop-auth-server
+- 接入第三方服务shop-third-party
+- 网关服务shop-gateway
+- 公共依赖shop-common
 
 ***
 
