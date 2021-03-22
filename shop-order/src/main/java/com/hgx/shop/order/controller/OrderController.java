@@ -13,7 +13,6 @@ import com.hgx.common.utils.PageUtils;
 import com.hgx.common.utils.R;
 
 
-
 /**
  * 订单
  *
@@ -29,11 +28,12 @@ public class OrderController {
 
     /**
      * 根据订单号获取订单
+     *
      * @param orderSn
      * @return
      */
     @GetMapping("/status/{orderSn}")
-    public R getOrderStatus(@PathVariable("orderSn") String orderSn){
+    public R getOrderStatus(@PathVariable("orderSn") String orderSn) {
         OrderEntity orderEntity = orderService.getOrderByOrderSn(orderSn);
         return R.ok().setData(orderEntity);
     }
@@ -43,8 +43,18 @@ public class OrderController {
      */
     @RequestMapping("/list")
     //@RequiresPermissions("order:order:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = orderService.queryPage(params);
+
+        return R.ok().put("page", page);
+    }
+
+    /**
+     * 分页查询当前登录用户的所有订单
+     */
+    @PostMapping("/listWithItem")
+    public R listWithItem(@RequestBody Map<String, Object> params) {
+        PageUtils page = orderService.queryPageWithItem(params);
 
         return R.ok().put("page", page);
     }
@@ -55,8 +65,8 @@ public class OrderController {
      */
     @RequestMapping("/info/{id}")
     //@RequiresPermissions("order:order:info")
-    public R info(@PathVariable("id") Long id){
-		OrderEntity order = orderService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        OrderEntity order = orderService.getById(id);
 
         return R.ok().put("order", order);
     }
@@ -66,8 +76,8 @@ public class OrderController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions("order:order:save")
-    public R save(@RequestBody OrderEntity order){
-		orderService.save(order);
+    public R save(@RequestBody OrderEntity order) {
+        orderService.save(order);
 
         return R.ok();
     }
@@ -77,8 +87,8 @@ public class OrderController {
      */
     @RequestMapping("/update")
     //@RequiresPermissions("order:order:update")
-    public R update(@RequestBody OrderEntity order){
-		orderService.updateById(order);
+    public R update(@RequestBody OrderEntity order) {
+        orderService.updateById(order);
 
         return R.ok();
     }
@@ -88,8 +98,8 @@ public class OrderController {
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("order:order:delete")
-    public R delete(@RequestBody Long[] ids){
-		orderService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        orderService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }
