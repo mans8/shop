@@ -14,6 +14,7 @@ import com.hgx.shop.order.constant.OrderConstant;
 import com.hgx.shop.order.dao.OrderDao;
 import com.hgx.shop.order.entity.OrderEntity;
 import com.hgx.shop.order.entity.OrderItemEntity;
+import com.hgx.shop.order.entity.PaymentInfoEntity;
 import com.hgx.shop.order.enume.OrderStatusEnum;
 import com.hgx.shop.order.feign.CartFeignService;
 import com.hgx.shop.order.feign.MemberFeignService;
@@ -22,13 +23,12 @@ import com.hgx.shop.order.feign.WmsFeignService;
 import com.hgx.shop.order.interceptor.LoginUserInterceptor;
 import com.hgx.shop.order.service.OrderItemService;
 import com.hgx.shop.order.service.OrderService;
+import com.hgx.shop.order.service.PaymentInfoService;
 import com.hgx.shop.order.to.OrderCreateTo;
 import com.hgx.shop.order.vo.*;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -53,6 +53,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    PaymentInfoService paymentInfoService;
 
     @Autowired
     OrderItemService orderItemService;
@@ -284,6 +287,32 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         }).collect(Collectors.toList());
         page.setRecords(order_sn);
         return new PageUtils(page);
+    }
+
+    /**
+     * 处理支付宝的支付结果
+     *
+     * @param vo
+     * @return
+     */
+    @Override
+    public String handlePayResult(PayAsyncVo vo) {
+        //1.保存交易流水
+        PaymentInfoEntity infoEntity = new PaymentInfoEntity();
+        infoEntity.setAlipayTradeNo(vo.getTrade_no());
+        infoEntity.setOrderSn(vo.getOut_trade_no());
+        infoEntity.setPaymentStatus(vo.getTrade_status());
+        infoEntity.setCallbackTime(vo.getNotify_time());
+
+        paymentInfoService.save(infoEntity);
+
+        //2.修改订单状态
+        if (vo.getTrade_status().equals("TRADE_SUCCESS") || vo.getTrade_status().equals("TRADE_FINISHED")) {
+            //支付成功状态
+            String outTradeNo = vo.getOut_trade_no();
+            this.baseMapper.updateOrderStatus(outTradeNo, OrderStatusEnum.PAYED.getCode());
+        }
+        return "success";
     }
 
     /**
