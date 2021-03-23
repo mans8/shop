@@ -67,6 +67,16 @@ spring:
           predicates:
             - Host=cart.shop.com
 
+        - id: shop_order_route
+          uri: lb://shop-order
+          predicates:
+            - Host=order.shop.com
+
+        - id: shop_member_route
+          uri: lb://shop-member
+          predicates:
+            - Host=member.shop.com
+
 logging:
   level:
     com.hgx.shop: debug
