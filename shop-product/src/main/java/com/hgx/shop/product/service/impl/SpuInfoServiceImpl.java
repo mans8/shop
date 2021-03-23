@@ -272,7 +272,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             //设置库存信息
             if (finalStockMap == null) {
                 esModel.setHasStock(true);
-            }else {
+            } else {
                 esModel.setHasStock(finalStockMap.get(sku.getSkuId()));
             }
             //2、热度评分,0
@@ -294,11 +294,11 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
         //5.将数据发送给ES进行保存：shop-search
         R r = searchFeignService.productStatusUp(upProducts);
-        if (r.getCode() == 0){
+        if (r.getCode() == 0) {
             //远程调用成功
             //6、修改当前spu状态
             baseMapper.updateSpuStatus(spuId, ProductConstant.StatusEnum.SPU_UP.getCode());
-        }else {
+        } else {
             //远程调用失败
             //TODO 7.重复调用？接口幂等性;重试机制？
 
@@ -320,6 +320,14 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }
 
 
+    }
+
+    @Override
+    public SpuInfoEntity getSpuInfoBySkuId(Long skuId) {
+        SkuInfoEntity byId = skuInfoService.getById(skuId);
+        Long spuId = byId.getSpuId();
+        SpuInfoEntity spuInfoEntity = getById(spuId);
+        return spuInfoEntity;
     }
 
 }
