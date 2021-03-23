@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @EnableRedisHttpSession  //整合redis作为session存储
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.hgx.shop.auth.feign")
 @EnableDiscoveryClient
 @SpringBootApplication
 public class ShopAuthServerApplication {
