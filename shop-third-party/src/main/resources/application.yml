@@ -4,8 +4,6 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
     alicloud:
-#      access-key: LTAI4GJrGc2qWR5y8LzQNZy5
-#      secret-key: O8QHCbLenlqotj29H3SwfLOp6rKlU2
       oss:
         endpoint: oss-cn-shenzhen.aliyuncs.com
         bucket: shop-hgx
@@ -14,7 +12,6 @@ spring:
         path: /codeNotice
         skin: 1
         sign: 175622
-#        appcode: b089ced660154aedb927f246a853d681
   application:
     name: shop-third-party
 server:
