@@ -13,4 +13,8 @@ public interface SeckillService {
     void uploadSeckillSkuLast3Days();
 
     List<SeckillSkuRedisTo> getCurrentSeckillSkus();
+
+    SeckillSkuRedisTo getSkuSeckillInfo(Long skuId);
+
+    String kill(String killId, String key, Integer num) throws InterruptedException;
 }
