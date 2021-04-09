@@ -1,4 +1,9 @@
-# shop
+#### 包含商品、仓储、订单、购物车、优惠券、会员、检索、授权认证、外接第三方、网关等服务
+
+**微服务架构图：**
+
+![image-20210410013920851](https://md-java-pic.oss-cn-guangzhou.aliyuncs.com/20210410013921shop微服务架构图.png)
+
 **购物商城模块：**
 
 - 商品服务shop-product
@@ -24,7 +29,10 @@
 - SpringCloud Alibaba - Sentinel：服务容错（限流、降级、熔断）
 - SpringCloud - Gateway：API网关（webflux编程模式）
 - SpringCloud - Sleuth：调用链监控
-- SpringCloud Alibaba - Seata：原Fescar，即分布式事务解决方案
+- SpringCloud Alibaba - Seata：原Fescar，即分布式事务解决方案，高效且简单
+- SpringCloud Sentinel：流量控制，限流熔断
+- SpringCloud Sleuth：链路追踪
+- SpringCloud Zipkin：链路追踪可视化
 
 [SpringCloudAlibaba版本说明](https://github.com/alibaba/spring-cloud-alibaba/wiki/版本说明)
 
@@ -150,7 +158,5 @@ npm run dev
 ```
 cd appname
 npm i element-ui
-
-
 ```
 
