@@ -1,15 +1,12 @@
 package com.hgx.shop.coupon.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hgx.shop.coupon.entity.SeckillSessionEntity;
 import com.hgx.shop.coupon.service.SeckillSessionService;
@@ -28,8 +25,19 @@ import com.hgx.common.utils.R;
 @RestController
 @RequestMapping("coupon/seckillsession")
 public class SeckillSessionController {
+
     @Autowired
     private SeckillSessionService seckillSessionService;
+
+    /**
+     * 获取最近三天要上架的秒杀商品
+     * @return
+     */
+    @GetMapping("/lastest3DaySession")
+    public R getLastest3DaySession(){
+        List<SeckillSessionEntity> sessionEntities = seckillSessionService.getLastest3DaySession();
+        return R.ok().setData(sessionEntities);
+    }
 
     /**
      * 列表

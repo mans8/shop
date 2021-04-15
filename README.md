@@ -2,7 +2,7 @@
 
 **微服务架构图：**
 
-![image-20210410013920851](https://md-java-pic.oss-cn-guangzhou.aliyuncs.com/20210410013921shop微服务架构图.png)
+![image-20210416004428562](https://md-java-pic.oss-cn-guangzhou.aliyuncs.com/20210416004429微服务架构图.png)
 
 **购物商城模块：**
 

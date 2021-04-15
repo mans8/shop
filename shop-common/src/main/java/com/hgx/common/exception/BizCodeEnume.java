@@ -20,6 +20,7 @@ package com.hgx.common.exception;
 public enum BizCodeEnume {
     UNKNOW_EXCEPTION(10000, "系统未知异常"),
     VAILD_EXCEPTION(10001, "数据校验出现错误"),
+    TOO_MANY_REQUEST(10002, "请求流量过大"),
     SMS_CODE_EXCEPTION(10002, "验证码获取频率太高，请稍后再试"),
     PRODUCT_UP_EXCEPTION(11000, "商品上架异常"),
     USER_EXIST_EXCEPTION(15001, "用户存在异常"),

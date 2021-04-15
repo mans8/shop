@@ -33,4 +33,4 @@ server:
   port: 10000
 logging:
   level:
-    com.hgx.shop: debug
+    com.hgx.shop: info

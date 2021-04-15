@@ -70,12 +70,24 @@
             <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
             <version>2.1.0.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+<!--            <version>2.0.0.RELEASE</version>-->
+        </dependency>
 
         <!-- 用于自定义注解校验 -->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>2.0.1.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.1.5.Final</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- 导入org.apache.http.client.HttpClient依赖  -->
@@ -104,6 +116,16 @@
             <artifactId>jetty-util</artifactId>
             <version>9.3.7.v20160115</version>
         </dependency>
+        <!-- 链路追踪  -->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-sleuth</artifactId>-->
+<!--        </dependency>-->
+<!--        zipkin中已经包含sleuth，zipkin是成套方案-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-zipkin</artifactId>-->
+<!--        </dependency>-->
 
     </dependencies>
 
@@ -117,6 +139,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.cloud</groupId>-->
+<!--                <artifactId>spring-cloud-dependencies</artifactId>-->
+<!--                <version>Greenwich.SR3</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
